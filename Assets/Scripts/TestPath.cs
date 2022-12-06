@@ -1,35 +1,39 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class TestPath : MonoBehaviour
 {
-    public Transform npc, goal;
+    public Transform Npc, Goal;
 
-    public Tilemap collisionTileMap;
-    public Tile collisionTile;
+    [SerializeField] private Tilemap _collisionTileMap;
+    [SerializeField] private Tile _collisionTile;
     
     private Vector2Int[] _currentPath;
+
     public void GeneratePath()
     {
-        _currentPath = FindObjectOfType<AStarAlgorithm>().GetPath(Vector2Int.RoundToInt(npc.position),
-            Vector2Int.RoundToInt(goal.position));
+        _currentPath = FindObjectOfType<AStarAlgorithm>().GetPath(Vector2Int.RoundToInt(Npc.position),
+            Vector2Int.RoundToInt(Goal.position));
     }
     
     [ContextMenu("FollowPath")]
-    public void MovePath()
-    {
-        StartCoroutine(FollowPath());
-    }
-    
+    public void MovePath() => StartCoroutine(FollowPath());
+
     IEnumerator FollowPath()
     {
         foreach (var node in _currentPath)
         {
-            npc.position = (Vector2)node;
+            Npc.position = (Vector2)node;
             yield return new WaitForSeconds(.1f);
         }
     }
+
+    public void SetCollisionTile(Vector3Int pos) => _collisionTileMap.SetTile(pos, _collisionTile);
+
+    public void RemoveCollisionTile(Vector3Int pos) => _collisionTileMap.SetTile(pos, null);
+    
     private void OnDrawGizmosSelected()
     {
         if(_currentPath == null)

@@ -6,6 +6,7 @@ using UnityEngine.Tilemaps;
 
 public class AStarAlgorithm : MonoBehaviour
 {
+    private const int BoundrySize = 100;
     private const int NormalCost = 10;
     private const int DiagonalCost = 14;
     
@@ -16,9 +17,7 @@ public class AStarAlgorithm : MonoBehaviour
     private Dictionary<Vector2Int, int> _costSoFar = new Dictionary<Vector2Int, int>();
     private SimplePriorityQueue<Vector2Int> _nodeQueue = new SimplePriorityQueue<Vector2Int>();
     private HashSet<Vector2Int> _closestPathDebug = new HashSet<Vector2Int>();
-
-    private const int BoundrySize = 100;
-
+    
     public Vector2Int[] GetPath(Vector2Int start, Vector2Int goal)
     {
         if(Physics2D.OverlapPoint(start) != null) return null;

@@ -10,6 +10,8 @@ public class TestPathEditor : Editor
     {
         _testPath = (TestPath)target;
         Tools.hidden = true;
+        
+        _testPath.GeneratePath();
     }
 
     private const string HelpText = "-Shift+Mouse0: Place Obstacle\n-Shift+Mouse1: Remove Obstacle\n-Shift+Mouse0+OnGoal: Move to Goal"; 
@@ -27,9 +29,9 @@ public class TestPathEditor : Editor
 
     private void OnSceneGUI()
     {
-        if(_testPath.collisionTileMap == null && _testPath.npc == null || _testPath.goal == null) return;
+        if(_testPath.Npc == null || _testPath.Goal == null) return;
 
-        Vector3 npcPos = _testPath.npc.position, goalPos = _testPath.goal.position;
+        Vector3 npcPos = _testPath.Npc.position, goalPos = _testPath.Goal.position;
 
         var guiEvent = Event.current;
 
@@ -45,13 +47,13 @@ public class TestPathEditor : Editor
 
             if (mouseDown && guiEvent.button == 0 && mousePosition != Vector3Int.RoundToInt(npcPos) && mousePosition != Vector3Int.RoundToInt(goalPos))
             {
-                _testPath.collisionTileMap.SetTile(mousePosition, _testPath.collisionTile);
+                _testPath.SetCollisionTile(mousePosition);
                 _refreshTilemap = true;
             }
             if (mouseDown && guiEvent.button == 1)
             {
                 Event.current.Use();
-                _testPath.collisionTileMap.SetTile(mousePosition, null);
+                _testPath.RemoveCollisionTile(mousePosition);
                 _refreshTilemap = true;
             }
             
@@ -78,10 +80,10 @@ public class TestPathEditor : Editor
         
         if(!EditorGUI.EndChangeCheck()) return;
 
-        _testPath.npc.position = newNpcPos;
-        _testPath.goal.position = newGoalPos;
+        _testPath.Npc.position = newNpcPos;
+        _testPath.Goal.position = newGoalPos;
         
-        Handles.SnapToGrid(new[] {_testPath.npc, _testPath.goal });
+        Handles.SnapToGrid(new[] {_testPath.Npc, _testPath.Goal });
 
         _testPath.GeneratePath();
     }
